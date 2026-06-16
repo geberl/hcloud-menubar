@@ -57,6 +57,12 @@ let DefaultApiBaseUrl: String = "https://api.hetzner.cloud/v1"
 let DefaultHetznerConsoleBaseUrl: String = "https://console.hetzner.cloud"
 let TimeoutDefault: Double = 5
 
+/// Items requested per page when listing a resource. Hetzner's default is 25 and the max is 50.
+let ResourcesPerPage: Int = 50
+/// Defensive upper bound on how many pages a single list load will follow before stopping.
+/// At `ResourcesPerPage` items each this caps a load at 1000 items; hitting it is logged.
+let ResourcesMaxPages: Int = 20
+
 // MARK: - SSH Configuration
 
 let DefaultSSHUser: String = "root"

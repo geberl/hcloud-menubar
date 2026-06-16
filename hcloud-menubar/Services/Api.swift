@@ -10,13 +10,23 @@ func userAgent() -> String {
 func buildURLRequest(customApiBaseUrl: String,
                      resourceSuffix: String,
                      timeout: Double,
-                     token: String) -> URLRequest?
+                     token: String,
+                     queryItems: [URLQueryItem] = []) -> URLRequest?
 {
     let baseUrl = customApiBaseUrl.isEmpty ? DefaultApiBaseUrl : customApiBaseUrl
     let urlString = "\(baseUrl)/\(resourceSuffix)"
 
-    guard let url = URL(string: urlString) else {
+    guard var components = URLComponents(string: urlString) else {
         logApi.error("buildURLRequest failed to create URL for \(urlString)")
+        return nil
+    }
+
+    if !queryItems.isEmpty {
+        components.queryItems = queryItems
+    }
+
+    guard let url = components.url else {
+        logApi.error("buildURLRequest failed to build URL with query for \(urlString)")
         return nil
     }
 
@@ -57,11 +67,54 @@ func fetchData(request: URLRequest) async -> Data? {
     }
 }
 
-/// Fetches and decodes a resource list. Both the network wait and the JSON decode run off the
-/// main actor (this function is non-isolated); callers assign the result back on their own actor.
-func loadResources<T: HCloudResource>(request: URLRequest) async -> [T] {
-    guard let data = await fetchData(request: request) else { return [] }
-    return decodeResourceList(from: data)
+/// A single decoded page of a resource list: the typed elements plus the cursor to the next
+/// page (`nil` once the last page has been reached).
+struct ResourcePage<T: HCloudResource> {
+    let items: [T]
+    let nextPage: Int?
+}
+
+/// Fetches and decodes a full resource list, following Hetzner's `meta.pagination.next_page`
+/// cursor until it runs out. Both the network wait and the JSON decode run off the main actor
+/// (this function is non-isolated); callers assign the result back on their own actor.
+///
+/// Hetzner paginates with a default of 25 items/page, so a single fetch would silently drop
+/// everything past the first page. We request `ResourcesPerPage` items and accumulate pages up
+/// to `ResourcesMaxPages` as a defensive cap; hitting the cap is logged.
+func loadResources<T: HCloudResource>(customApiBaseUrl: String,
+                                      resourceSuffix: String,
+                                      timeout: Double,
+                                      token: String) async -> [T]
+{
+    var items: [T] = []
+    var page: Int? = 1
+    var pagesFetched = 0
+
+    while let currentPage = page {
+        guard pagesFetched < ResourcesMaxPages else {
+            logApi.error("loadResources hit the \(ResourcesMaxPages)-page cap for '\(resourceSuffix)'; some items may be missing")
+            break
+        }
+
+        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
+                                            resourceSuffix: resourceSuffix,
+                                            timeout: timeout,
+                                            token: token,
+                                            queryItems: [
+                                                URLQueryItem(name: "page", value: String(currentPage)),
+                                                URLQueryItem(name: "per_page", value: String(ResourcesPerPage)),
+                                            ])
+        else { return items }
+
+        guard let data = await fetchData(request: request) else { return items }
+
+        let decoded: ResourcePage<T> = decodeResourceList(from: data)
+        items.append(contentsOf: decoded.items)
+        page = decoded.nextPage
+        pagesFetched += 1
+    }
+
+    return items
 }
 
 /// Decodes a Hetzner list response (`{ "<container>": [...], "meta": {...} }`) into typed resources.
@@ -70,18 +123,23 @@ func loadResources<T: HCloudResource>(request: URLRequest) async -> [T] {
 /// `JSONSerialization` pass splits out the container array so each element's exact raw bytes can be
 /// retained (pretty-printed) for the "Show JSON" feature; the typed fields are then decoded per
 /// element with `JSONDecoder`. Elements that fail to decode are skipped and logged rather than
-/// discarding the whole list.
-func decodeResourceList<T: HCloudResource>(from data: Data) -> [T] {
+/// discarding the whole list. The `meta.pagination.next_page` cursor is read out alongside the
+/// elements so the caller can follow it.
+func decodeResourceList<T: HCloudResource>(from data: Data) -> ResourcePage<T> {
     let container = T.endpoint
 
     guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
         logJson.error("Error creating dictionary from json data")
-        return []
+        return ResourcePage(items: [], nextPage: nil)
     }
+
+    // A JSON `null` decodes to NSNull, so `as? Int` cleanly yields nil on the last page.
+    let nextPage = (root["meta"] as? [String: Any])
+        .flatMap { $0["pagination"] as? [String: Any] }?["next_page"] as? Int
 
     guard let elements = root[container] as? [Any] else {
         logJson.error("Error getting '\(container)' array item from json")
-        return []
+        return ResourcePage(items: [], nextPage: nil)
     }
 
     let decoder = JSONDecoder()
@@ -103,5 +161,5 @@ func decodeResourceList<T: HCloudResource>(from data: Data) -> [T] {
         }
     }
 
-    return resources
+    return ResourcePage(items: resources, nextPage: nextPage)
 }

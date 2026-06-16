@@ -57,14 +57,13 @@ class ResourceList<T: HCloudResource>: ObservableObject {
         loaded = false
         items.removeAll()
 
-        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                            resourceSuffix: T.endpoint,
-                                            timeout: AppSettings.shared.timeoutSeconds,
-                                            token: token)
-        else { return }
+        let timeout = AppSettings.shared.timeoutSeconds
 
         Task {
-            let decoded: [T] = await loadResources(request: request)
+            let decoded: [T] = await loadResources(customApiBaseUrl: customApiBaseUrl,
+                                                   resourceSuffix: T.endpoint,
+                                                   timeout: timeout,
+                                                   token: token)
             items = decoded
             loaded = true
         }
