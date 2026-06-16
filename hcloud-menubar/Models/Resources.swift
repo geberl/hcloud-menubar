@@ -59,7 +59,7 @@ enum HCloudError: Error, Equatable {
 /// Lifecycle of a `ResourceList` load, replacing the old `loaded: Bool` so the menu can tell
 /// "never loaded", "loading", "loaded", and "failed" apart instead of collapsing them all into a
 /// permanent "Not Loaded".
-enum LoadState {
+enum LoadState: Equatable {
     case idle
     case loading
     case loaded
