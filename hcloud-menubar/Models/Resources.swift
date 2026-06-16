@@ -1,34 +1,35 @@
 import Foundation
 
-class Resource: Identifiable {
-    var resType: String?
-    var jsonData: Data?
+/// Shared shape for every Hetzner Cloud resource the app lists.
+///
+/// Conformers are `Codable` structs whose API-backed fields are all optional, so the
+/// synthesized decoder uses `decodeIfPresent` and never throws on a missing/null field.
+/// `resType` and `jsonData` are not part of the API payload; they are populated after
+/// decoding by `decodeResourceList(from:container:resType:)`.
+protocol HCloudResource: Codable, Identifiable {
+    var id: Int? { get }
+    var name: String? { get }
+    var created: String? { get }
+    var labels: [String: String]? { get }
 
-    var id: Int?
-    var name: String?
-    var created: String?
-    var labels: [String: String] = [:]
+    /// Resource type tag (e.g. "server"), used when dumping JSON to a temp file.
+    var resType: String? { get set }
+    /// The raw, pretty-printed JSON for this single item, used by "Show JSON".
+    var jsonData: Data? { get set }
+}
 
-    init(fromDict dict: NSDictionary, as resType: String) {
-        self.resType = resType
-        do {
-            jsonData = try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted)
-        } catch {
-            logJson.error("Resource Json Serialization error: \(String(describing: error))")
-        }
-
-        if let id = dict["id"] as? Int { self.id = id }
-        if let name = dict["name"] as? String { self.name = name }
-        if let created = dict["created"] as? String { self.created = created }
-
-        if let labels = dict["labels"] as? [String: String] {
-            for (key, value) in labels {
-                self.labels[key] = value
-            }
-        }
-    }
-
+extension HCloudResource {
     func hidden() -> Bool {
-        labels.contains { $0.key == labelHide && LabelBoolsPositive.contains($0.value) }
+        (labels ?? [:]).contains { $0.key == labelHide && LabelBoolsPositive.contains($0.value) }
     }
+}
+
+/// Hetzner's `public_net` block, shared by servers and load balancers.
+struct PublicNet: Codable {
+    struct IPField: Codable {
+        let ip: String?
+    }
+
+    let ipv4: IPField?
+    let ipv6: IPField?
 }

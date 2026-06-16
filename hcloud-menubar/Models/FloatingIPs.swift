@@ -1,11 +1,17 @@
 import Foundation
 
-class FloatingIP: Resource {
+struct FloatingIP: HCloudResource {
+    var id: Int?
+    var name: String?
+    var created: String?
+    var labels: [String: String]?
     var ip: String?
 
-    override init(fromDict dict: NSDictionary, as resType: String) {
-        super.init(fromDict: dict, as: resType)
-        if let ip = dict["ip"] as? String { self.ip = ip }
+    var resType: String?
+    var jsonData: Data?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, created, labels, ip
     }
 }
 
@@ -13,32 +19,22 @@ class FloatingIPs: ObservableObject {
     @Published var items: [FloatingIP] = []
     @Published var loaded: Bool = false
 
-    func removeItems() {
-        items.removeAll()
-    }
-
-    func addItems(items: NSArray) {
-        for item in items {
-            guard let itemDict = item as? NSDictionary else { continue }
-            self.items.append(FloatingIP(fromDict: itemDict, as: "floating_ip"))
-        }
-        loaded = true
-    }
-
     func reload(customApiBaseUrl: String, token: String) {
         loaded = false
-        removeItems()
+        items.removeAll()
 
-        let resourceRequest = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                              resourceSuffix: "floating_ips",
-                                              timeout: AppSettings.shared.timeoutSeconds,
-                                              token: token)
+        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
+                                            resourceSuffix: "floating_ips",
+                                            timeout: AppSettings.shared.timeoutSeconds,
+                                            token: token)
+        else { return }
 
-        if let safeResourceRequest = resourceRequest {
-            startDataTask(request: safeResourceRequest,
-                          dataCompletion: handleResponse,
-                          jsonContainer: "floating_ips",
-                          addItemsHandler: addItems)
+        startDataTask(request: request) { data in
+            let decoded: [FloatingIP] = decodeResourceList(from: data, container: "floating_ips", resType: "floating_ip")
+            DispatchQueue.main.async {
+                self.items = decoded
+                self.loaded = true
+            }
         }
     }
 }

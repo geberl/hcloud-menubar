@@ -18,7 +18,7 @@ func dumpResourceJson(resourceName: String, resourceId: Int, json: Data) -> URL 
     return fileUrl
 }
 
-func openJsonInEditor(resource: Resource) {
+func openJsonInEditor(resource: any HCloudResource) {
     let appEditor = AppSettings.shared.appEditor
 
     if let safeResourceType = resource.resType {

@@ -1,37 +1,39 @@
 import Foundation
 
-class Volume: Resource {}
+struct Volume: HCloudResource {
+    var id: Int?
+    var name: String?
+    var created: String?
+    var labels: [String: String]?
+
+    var resType: String?
+    var jsonData: Data?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, created, labels
+    }
+}
 
 class Volumes: ObservableObject {
     @Published var items: [Volume] = []
     @Published var loaded: Bool = false
 
-    func removeItems() {
-        items.removeAll()
-    }
-
-    func addItems(items: NSArray) {
-        for item in items {
-            guard let itemDict = item as? NSDictionary else { continue }
-            self.items.append(Volume(fromDict: itemDict, as: "volume"))
-        }
-        loaded = true
-    }
-
     func reload(customApiBaseUrl: String, token: String) {
         loaded = false
-        removeItems()
+        items.removeAll()
 
-        let resourceRequest = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                              resourceSuffix: "volumes",
-                                              timeout: AppSettings.shared.timeoutSeconds,
-                                              token: token)
+        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
+                                            resourceSuffix: "volumes",
+                                            timeout: AppSettings.shared.timeoutSeconds,
+                                            token: token)
+        else { return }
 
-        if let safeResourceRequest = resourceRequest {
-            startDataTask(request: safeResourceRequest,
-                          dataCompletion: handleResponse,
-                          jsonContainer: "volumes",
-                          addItemsHandler: addItems)
+        startDataTask(request: request) { data in
+            let decoded: [Volume] = decodeResourceList(from: data, container: "volumes", resType: "volume")
+            DispatchQueue.main.async {
+                self.items = decoded
+                self.loaded = true
+            }
         }
     }
 }

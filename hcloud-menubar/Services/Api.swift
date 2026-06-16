@@ -31,11 +31,7 @@ func buildURLRequest(customApiBaseUrl: String,
     return request
 }
 
-func startDataTask(request: URLRequest,
-                   dataCompletion: @escaping (Data, String, @escaping (NSArray) -> Void) -> Void,
-                   jsonContainer: String,
-                   addItemsHandler: @escaping (NSArray) -> Void)
-{
+func startDataTask(request: URLRequest, onData: @escaping (Data) -> Void) {
     let urlSession = URLSession(configuration: URLSessionConfiguration.default)
 
     let task = urlSession.dataTask(with: request as URLRequest) { data, response, error in
@@ -55,7 +51,7 @@ func startDataTask(request: URLRequest,
                 logApi.error("startDataTask http response error: Did not contain any data")
                 return
             }
-            dataCompletion(saveData, jsonContainer, addItemsHandler)
+            onData(saveData)
         default:
             logApi.error("startDataTask http response code: \(httpResponse.statusCode)")
         }
@@ -64,23 +60,41 @@ func startDataTask(request: URLRequest,
     task.resume()
 }
 
-func handleResponse(data: Data, jsonContainer: String, addItemsHandler: @escaping (NSArray) -> Void) {
-    do {
-        let responseSerialized = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        let jsonResult: NSDictionary! = responseSerialized as? NSDictionary // or NSArray depending on root element
-        if jsonResult != nil {
-            guard let items = jsonResult[jsonContainer] as? NSArray else {
-                logJson.error("Error getting '\(jsonContainer)' array item from json")
-                return
-            }
-
-            DispatchQueue.main.async {
-                addItemsHandler(items)
-            }
-        } else {
-            logJson.error("Error creating dictionary from json data")
-        }
-    } catch {
-        logJson.error("Error serializing json")
+/// Decodes a Hetzner list response (`{ "<container>": [...], "meta": {...} }`) into typed resources.
+///
+/// A single `JSONSerialization` pass splits out the container array so each element's exact raw
+/// bytes can be retained (pretty-printed) for the "Show JSON" feature; the typed fields are then
+/// decoded per element with `JSONDecoder`. Elements that fail to decode are skipped and logged
+/// rather than discarding the whole list.
+func decodeResourceList<T: HCloudResource>(from data: Data, container: String, resType: String) -> [T] {
+    guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+        logJson.error("Error creating dictionary from json data")
+        return []
     }
+
+    guard let elements = root[container] as? [Any] else {
+        logJson.error("Error getting '\(container)' array item from json")
+        return []
+    }
+
+    let decoder = JSONDecoder()
+    var resources: [T] = []
+
+    for element in elements {
+        guard let itemData = try? JSONSerialization.data(withJSONObject: element, options: .prettyPrinted) else {
+            logJson.error("Error serializing '\(container)' element")
+            continue
+        }
+
+        do {
+            var resource = try decoder.decode(T.self, from: itemData)
+            resource.resType = resType
+            resource.jsonData = itemData
+            resources.append(resource)
+        } catch {
+            logJson.error("Error decoding '\(container)' element: \(String(describing: error))")
+        }
+    }
+
+    return resources
 }

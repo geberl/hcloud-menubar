@@ -1,24 +1,26 @@
 import Foundation
 
-class LoadBalancer: Resource {
-    var ipv4: String?
-    var ipv6: String?
+struct LoadBalancer: HCloudResource {
+    var id: Int?
+    var name: String?
+    var created: String?
+    var labels: [String: String]?
+    var publicNet: PublicNet?
 
-    override init(fromDict dict: NSDictionary, as resType: String) {
-        super.init(fromDict: dict, as: resType)
+    var resType: String?
+    var jsonData: Data?
 
-        if let public_net = dict["public_net"] as? NSDictionary {
-            if let ipv4 = public_net["ipv4"] as? NSDictionary {
-                if let ip = ipv4["ip"] as? String {
-                    self.ipv4 = ip
-                }
-            }
-            if let ipv6 = public_net["ipv6"] as? NSDictionary {
-                if let ip = ipv6["ip"] as? String {
-                    self.ipv6 = ip
-                }
-            }
-        }
+    enum CodingKeys: String, CodingKey {
+        case id, name, created, labels
+        case publicNet = "public_net"
+    }
+
+    var ipv4: String? {
+        publicNet?.ipv4?.ip
+    }
+
+    var ipv6: String? {
+        publicNet?.ipv6?.ip
     }
 }
 
@@ -26,32 +28,22 @@ class LoadBalancers: ObservableObject {
     @Published var items: [LoadBalancer] = []
     @Published var loaded: Bool = false
 
-    func removeItems() {
-        items.removeAll()
-    }
-
-    func addItems(items: NSArray) {
-        for item in items {
-            guard let itemDict = item as? NSDictionary else { continue }
-            self.items.append(LoadBalancer(fromDict: itemDict, as: "load_balancer"))
-        }
-        loaded = true
-    }
-
     func reload(customApiBaseUrl: String, token: String) {
         loaded = false
-        removeItems()
+        items.removeAll()
 
-        let resourceRequest = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                              resourceSuffix: "load_balancers",
-                                              timeout: AppSettings.shared.timeoutSeconds,
-                                              token: token)
+        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
+                                            resourceSuffix: "load_balancers",
+                                            timeout: AppSettings.shared.timeoutSeconds,
+                                            token: token)
+        else { return }
 
-        if let safeResourceRequest = resourceRequest {
-            startDataTask(request: safeResourceRequest,
-                          dataCompletion: handleResponse,
-                          jsonContainer: "load_balancers",
-                          addItemsHandler: addItems)
+        startDataTask(request: request) { data in
+            let decoded: [LoadBalancer] = decodeResourceList(from: data, container: "load_balancers", resType: "load_balancer")
+            DispatchQueue.main.async {
+                self.items = decoded
+                self.loaded = true
+            }
         }
     }
 }
