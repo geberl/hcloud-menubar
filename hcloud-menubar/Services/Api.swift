@@ -31,33 +31,37 @@ func buildURLRequest(customApiBaseUrl: String,
     return request
 }
 
-func startDataTask(request: URLRequest, onData: @escaping (Data) -> Void) {
-    let urlSession = URLSession(configuration: URLSessionConfiguration.default)
+/// Shared session reused for all resource list requests.
+let hcloudURLSession = URLSession(configuration: .default)
 
-    let task = urlSession.dataTask(with: request as URLRequest) { data, response, error in
-        guard error == nil else {
-            logApi.error("startDataTask error: \(String(describing: error))")
-            return
-        }
+/// Performs a GET and returns the response body on HTTP 200, or `nil` (logging the reason) on any
+/// failure. Non-isolated `async`, so the network wait never blocks the main actor.
+func fetchData(request: URLRequest) async -> Data? {
+    do {
+        let (data, response) = try await hcloudURLSession.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
-            logApi.error("startDataTask did not return a valid response")
-            return
+            logApi.error("fetchData did not return a valid response")
+            return nil
         }
 
-        switch httpResponse.statusCode {
-        case 200:
-            guard let saveData = data else {
-                logApi.error("startDataTask http response error: Did not contain any data")
-                return
-            }
-            onData(saveData)
-        default:
-            logApi.error("startDataTask http response code: \(httpResponse.statusCode)")
+        guard httpResponse.statusCode == 200 else {
+            logApi.error("fetchData http response code: \(httpResponse.statusCode)")
+            return nil
         }
+
+        return data
+    } catch {
+        logApi.error("fetchData error: \(String(describing: error))")
+        return nil
     }
+}
 
-    task.resume()
+/// Fetches and decodes a resource list. Both the network wait and the JSON decode run off the
+/// main actor (this function is non-isolated); callers assign the result back on their own actor.
+func loadResources<T: HCloudResource>(request: URLRequest) async -> [T] {
+    guard let data = await fetchData(request: request) else { return [] }
+    return decodeResourceList(from: data)
 }
 
 /// Decodes a Hetzner list response (`{ "<container>": [...], "meta": {...} }`) into typed resources.

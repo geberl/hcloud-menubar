@@ -6,7 +6,7 @@ import Foundation
 /// synthesized decoder uses `decodeIfPresent` and never throws on a missing/null field.
 /// `resType` and `jsonData` are not part of the API payload; they are populated after
 /// decoding by `decodeResourceList(from:)`.
-protocol HCloudResource: Codable, Identifiable {
+protocol HCloudResource: Codable, Identifiable, Sendable {
     /// API path suffix, which is also the JSON container key (e.g. "servers").
     static var endpoint: String { get }
     /// Singular type tag (e.g. "server"), stored on each item as `resType`.
@@ -44,6 +44,11 @@ struct PublicNet: Codable {
 /// All resource lists differ only by their element type, so each concrete list is just a
 /// `typealias` over this class (e.g. `typealias Servers = ResourceList<Server>`). The API
 /// endpoint and type tag are read from the element type's static metadata.
+///
+/// The class is `@MainActor`-isolated, so the network fetch/decode runs off the main actor
+/// (inside the non-isolated `loadResources`) while the `@Published` mutations are compiler-
+/// guaranteed to happen back on the main actor.
+@MainActor
 class ResourceList<T: HCloudResource>: ObservableObject {
     @Published var items: [T] = []
     @Published var loaded: Bool = false
@@ -58,12 +63,10 @@ class ResourceList<T: HCloudResource>: ObservableObject {
                                             token: token)
         else { return }
 
-        startDataTask(request: request) { data in
-            let decoded: [T] = decodeResourceList(from: data)
-            DispatchQueue.main.async {
-                self.items = decoded
-                self.loaded = true
-            }
+        Task {
+            let decoded: [T] = await loadResources(request: request)
+            items = decoded
+            loaded = true
         }
     }
 }
