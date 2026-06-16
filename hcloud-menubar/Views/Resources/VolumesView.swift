@@ -6,7 +6,12 @@ struct VolumesView: View {
 
     var body: some View {
         Menu {
-            if volumes.loaded {
+            switch volumes.loadState {
+            case .idle:
+                Button("Not Loaded", action: {}).disabled(true)
+            case .loading:
+                Button("Loading…", action: {}).disabled(true)
+            case .loaded:
                 if volumes.items.count > 0 {
                     ForEach(volumes.items) { volume in
                         VolumeMenuItem(project: project, volume: volume)
@@ -14,8 +19,8 @@ struct VolumesView: View {
                 } else {
                     Button("No Volumes", action: {}).disabled(true)
                 }
-            } else {
-                Button("Not Loaded", action: {}).disabled(true)
+            case let .failed(error):
+                Button(error.menuDescription, action: {}).disabled(true)
             }
             Divider()
             Button("View Volumes", action: { openVolumes() })

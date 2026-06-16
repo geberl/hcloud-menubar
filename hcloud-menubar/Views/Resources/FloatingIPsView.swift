@@ -6,7 +6,12 @@ struct FloatingIPsView: View {
 
     var body: some View {
         Menu {
-            if floatingIPs.loaded {
+            switch floatingIPs.loadState {
+            case .idle:
+                Button("Not Loaded", action: {}).disabled(true)
+            case .loading:
+                Button("Loading…", action: {}).disabled(true)
+            case .loaded:
                 if floatingIPs.items.count > 0 {
                     ForEach(floatingIPs.items) { floatingIP in
                         FloatingIPMenuItem(project: project, floatingIP: floatingIP)
@@ -14,8 +19,8 @@ struct FloatingIPsView: View {
                 } else {
                     Button("No Floating IPs", action: {}).disabled(true)
                 }
-            } else {
-                Button("Not Loaded", action: {}).disabled(true)
+            case let .failed(error):
+                Button(error.menuDescription, action: {}).disabled(true)
             }
             Divider()
             Button("View Floating IPs", action: { openFloatingIPs() })

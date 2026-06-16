@@ -6,7 +6,12 @@ struct NetworksView: View {
 
     var body: some View {
         Menu {
-            if networks.loaded {
+            switch networks.loadState {
+            case .idle:
+                Button("Not Loaded", action: {}).disabled(true)
+            case .loading:
+                Button("Loading…", action: {}).disabled(true)
+            case .loaded:
                 if networks.items.count > 0 {
                     ForEach(networks.items) { network in
                         NetworkMenuItem(project: project, network: network)
@@ -14,8 +19,8 @@ struct NetworksView: View {
                 } else {
                     Button("No Networks", action: {}).disabled(true)
                 }
-            } else {
-                Button("Not Loaded", action: {}).disabled(true)
+            case let .failed(error):
+                Button(error.menuDescription, action: {}).disabled(true)
             }
             Divider()
             Button("View Networks", action: { openNetworks() })

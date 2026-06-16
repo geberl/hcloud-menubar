@@ -6,7 +6,12 @@ struct ServersView: View {
 
     var body: some View {
         Menu {
-            if servers.loaded {
+            switch servers.loadState {
+            case .idle:
+                Button("Not Loaded", action: {}).disabled(true)
+            case .loading:
+                Button("Loading…", action: {}).disabled(true)
+            case .loaded:
                 if servers.items.count > 0 {
                     ForEach(servers.items) { server in
                         ServerMenuItem(project: project, server: server)
@@ -14,8 +19,8 @@ struct ServersView: View {
                 } else {
                     Button("No Servers", action: {}).disabled(true)
                 }
-            } else {
-                Button("Not Loaded", action: {}).disabled(true)
+            case let .failed(error):
+                Button(error.menuDescription, action: {}).disabled(true)
             }
             Divider()
             Button("New Server", action: { newServer() })

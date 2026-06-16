@@ -6,7 +6,12 @@ struct LoadBalancersView: View {
 
     var body: some View {
         Menu {
-            if loadBalancers.loaded {
+            switch loadBalancers.loadState {
+            case .idle:
+                Button("Not Loaded", action: {}).disabled(true)
+            case .loading:
+                Button("Loading…", action: {}).disabled(true)
+            case .loaded:
                 if loadBalancers.items.count > 0 {
                     ForEach(loadBalancers.items) { loadBalancer in
                         LoadBalancerMenuItem(project: project, loadBalancer: loadBalancer)
@@ -14,8 +19,8 @@ struct LoadBalancersView: View {
                 } else {
                     Button("No Load Balancers", action: {}).disabled(true)
                 }
-            } else {
-                Button("Not Loaded", action: {}).disabled(true)
+            case let .failed(error):
+                Button(error.menuDescription, action: {}).disabled(true)
             }
             Divider()
             Button("New Load Balancer", action: { newLoadBalancer() })

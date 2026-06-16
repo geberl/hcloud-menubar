@@ -44,26 +44,36 @@ func buildURLRequest(customApiBaseUrl: String,
 /// Shared session reused for all resource list requests.
 let hcloudURLSession = URLSession(configuration: .default)
 
-/// Performs a GET and returns the response body on HTTP 200, or `nil` (logging the reason) on any
-/// failure. Non-isolated `async`, so the network wait never blocks the main actor.
-func fetchData(request: URLRequest) async -> Data? {
+/// Performs a GET and returns the response body on HTTP 200, or a mapped `HCloudError` (logging the
+/// reason) on any failure. Non-isolated `async`, so the network wait never blocks the main actor.
+func fetchData(request: URLRequest) async -> Result<Data, HCloudError> {
     do {
         let (data, response) = try await hcloudURLSession.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             logApi.error("fetchData did not return a valid response")
-            return nil
+            return .failure(.network)
         }
 
-        guard httpResponse.statusCode == 200 else {
+        switch httpResponse.statusCode {
+        case 200:
+            return .success(data)
+        case 401:
+            logApi.error("fetchData http response code: 401 (unauthorized)")
+            return .failure(.auth)
+        case 429:
+            logApi.error("fetchData http response code: 429 (rate limited)")
+            return .failure(.rateLimited)
+        case 500 ... 599:
+            logApi.error("fetchData http response code: \(httpResponse.statusCode) (server error)")
+            return .failure(.server)
+        default:
             logApi.error("fetchData http response code: \(httpResponse.statusCode)")
-            return nil
+            return .failure(.unexpected(httpResponse.statusCode))
         }
-
-        return data
     } catch {
         logApi.error("fetchData error: \(String(describing: error))")
-        return nil
+        return .failure(.network)
     }
 }
 
@@ -84,7 +94,7 @@ struct ResourcePage<T: HCloudResource> {
 func loadResources<T: HCloudResource>(customApiBaseUrl: String,
                                       resourceSuffix: String,
                                       timeout: Double,
-                                      token: String) async -> [T]
+                                      token: String) async -> Result<[T], HCloudError>
 {
     var items: [T] = []
     var page: Int? = 1
@@ -104,17 +114,21 @@ func loadResources<T: HCloudResource>(customApiBaseUrl: String,
                                                 URLQueryItem(name: "page", value: String(currentPage)),
                                                 URLQueryItem(name: "per_page", value: String(ResourcesPerPage)),
                                             ])
-        else { return items }
+        else { return .failure(.network) }
 
-        guard let data = await fetchData(request: request) else { return items }
-
-        let decoded: ResourcePage<T> = decodeResourceList(from: data)
-        items.append(contentsOf: decoded.items)
-        page = decoded.nextPage
-        pagesFetched += 1
+        switch await fetchData(request: request) {
+        case let .success(data):
+            let decoded: ResourcePage<T> = decodeResourceList(from: data)
+            items.append(contentsOf: decoded.items)
+            page = decoded.nextPage
+            pagesFetched += 1
+        case let .failure(error):
+            // Discard any partial pages: a failed load should surface the error, not a truncated list.
+            return .failure(error)
+        }
     }
 
-    return items
+    return .success(items)
 }
 
 /// Decodes a Hetzner list response (`{ "<container>": [...], "meta": {...} }`) into typed resources.

@@ -6,7 +6,12 @@ struct PrimaryIPsView: View {
 
     var body: some View {
         Menu {
-            if primaryIPs.loaded {
+            switch primaryIPs.loadState {
+            case .idle:
+                Button("Not Loaded", action: {}).disabled(true)
+            case .loading:
+                Button("Loading…", action: {}).disabled(true)
+            case .loaded:
                 if primaryIPs.items.count > 0 {
                     ForEach(primaryIPs.items) { primaryIP in
                         PrimaryIPMenuItem(project: project, primaryIP: primaryIP)
@@ -14,8 +19,8 @@ struct PrimaryIPsView: View {
                 } else {
                     Button("No Primary IPs", action: {}).disabled(true)
                 }
-            } else {
-                Button("Not Loaded", action: {}).disabled(true)
+            case let .failed(error):
+                Button(error.menuDescription, action: {}).disabled(true)
             }
             Divider()
             Button("View Primary IPs", action: { openPrimaryIPs() })
