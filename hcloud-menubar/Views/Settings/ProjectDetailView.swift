@@ -4,7 +4,23 @@ struct ProjectDetailView: View {
     @Bindable var project: Project
     @State private var isTokenVisible = false
     @State private var isTesting = false
-    @State private var testResult: Bool?
+    @State private var testResult: Result<Void, HCloudError>?
+
+    private var testIconName: String {
+        if case .success = testResult { "checkmark.circle.fill" } else { "xmark.circle.fill" }
+    }
+
+    private var testIconColor: Color {
+        if case .success = testResult { .green } else { .red }
+    }
+
+    private var testMessage: String {
+        switch testResult {
+        case .success: "Connection successful"
+        case let .failure(error): "Connection failed — \(error.menuDescription)"
+        case .none: ""
+        }
+    }
 
     var body: some View {
         Form {
@@ -113,9 +129,9 @@ struct ProjectDetailView: View {
             Section {
                 VStack(spacing: 12) {
                     HStack {
-                        Image(systemName: testResult == true ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundStyle(testResult == true ? .green : .red)
-                        Text(testResult == true ? "Connection successful" : "Connection failed")
+                        Image(systemName: testIconName)
+                            .foregroundStyle(testIconColor)
+                        Text(testMessage)
                             .font(.caption)
                     }
                     .opacity(testResult == nil ? 0 : 1)
@@ -124,8 +140,7 @@ struct ProjectDetailView: View {
                         Task {
                             isTesting = true
                             testResult = nil
-                            let success = await project.testToken()
-                            testResult = success
+                            testResult = await project.testToken()
                             isTesting = false
                         }
                     }) {

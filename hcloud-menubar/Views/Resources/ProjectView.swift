@@ -67,7 +67,10 @@ struct ProjectView: View {
     /// when no resource reload runs on startup to drive the badge from.
     func checkToken() {
         Task {
-            project.working = await project.testToken()
+            switch await project.testToken() {
+            case .success: project.working = true
+            case .failure: project.working = false
+            }
         }
     }
 

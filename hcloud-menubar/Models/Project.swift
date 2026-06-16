@@ -32,39 +32,16 @@ final class Project {
         self.customHetznerConsoleBaseUrl = customHetznerConsoleBaseUrl
     }
 
-    func testToken() async -> Bool {
-        let resourceRequest = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                              resourceSuffix: "datacenters",
-                                              timeout: AppSettings.shared.timeoutSeconds,
-                                              token: token)
+    /// Validates the token against the lightweight `datacenters` endpoint, returning the mapped
+    /// `HCloudError` on failure so the settings test button can explain *why* it failed.
+    func testToken() async -> Result<Void, HCloudError> {
+        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
+                                            resourceSuffix: "datacenters",
+                                            timeout: AppSettings.shared.timeoutSeconds,
+                                            token: token)
+        else { return .failure(.network) }
 
-        if let safeResourceRequest = resourceRequest {
-            return await withCheckedContinuation { continuation in
-                let urlSession = URLSession(configuration: URLSessionConfiguration.default)
-
-                let task = urlSession.dataTask(with: safeResourceRequest) { _, response, error in
-                    guard error == nil else {
-                        logApi.error("testToken error: \(String(describing: error))")
-                        continuation.resume(returning: false)
-                        return
-                    }
-
-                    guard let httpResponse = response as? HTTPURLResponse else {
-                        logApi.error("testToken did not return a valid response")
-                        continuation.resume(returning: false)
-                        return
-                    }
-
-                    logApi.debug("testToken http response code \(httpResponse.statusCode)")
-
-                    let success = httpResponse.statusCode == 200
-                    continuation.resume(returning: success)
-                }
-
-                task.resume()
-            }
-        }
-        return false
+        return await fetchData(request: request).map { _ in () }
     }
 }
 
