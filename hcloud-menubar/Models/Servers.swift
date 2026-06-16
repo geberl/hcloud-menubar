@@ -1,6 +1,9 @@
 import Foundation
 
 struct Server: HCloudResource {
+    static let endpoint = "servers"
+    static let resourceType = "server"
+
     var id: Int?
     var name: String?
     var created: String?
@@ -59,26 +62,4 @@ struct Server: HCloudResource {
     }
 }
 
-class Servers: ObservableObject {
-    @Published var items: [Server] = []
-    @Published var loaded: Bool = false
-
-    func reload(customApiBaseUrl: String, token: String) {
-        loaded = false
-        items.removeAll()
-
-        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                            resourceSuffix: "servers",
-                                            timeout: AppSettings.shared.timeoutSeconds,
-                                            token: token)
-        else { return }
-
-        startDataTask(request: request) { data in
-            let decoded: [Server] = decodeResourceList(from: data, container: "servers", resType: "server")
-            DispatchQueue.main.async {
-                self.items = decoded
-                self.loaded = true
-            }
-        }
-    }
-}
+typealias Servers = ResourceList<Server>

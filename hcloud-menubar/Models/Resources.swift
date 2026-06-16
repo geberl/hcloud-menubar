@@ -5,8 +5,13 @@ import Foundation
 /// Conformers are `Codable` structs whose API-backed fields are all optional, so the
 /// synthesized decoder uses `decodeIfPresent` and never throws on a missing/null field.
 /// `resType` and `jsonData` are not part of the API payload; they are populated after
-/// decoding by `decodeResourceList(from:container:resType:)`.
+/// decoding by `decodeResourceList(from:)`.
 protocol HCloudResource: Codable, Identifiable {
+    /// API path suffix, which is also the JSON container key (e.g. "servers").
+    static var endpoint: String { get }
+    /// Singular type tag (e.g. "server"), stored on each item as `resType`.
+    static var resourceType: String { get }
+
     var id: Int? { get }
     var name: String? { get }
     var created: String? { get }
@@ -32,4 +37,33 @@ struct PublicNet: Codable {
 
     let ipv4: IPField?
     let ipv6: IPField?
+}
+
+/// Generic, observable collection of a single Hetzner Cloud resource type.
+///
+/// All resource lists differ only by their element type, so each concrete list is just a
+/// `typealias` over this class (e.g. `typealias Servers = ResourceList<Server>`). The API
+/// endpoint and type tag are read from the element type's static metadata.
+class ResourceList<T: HCloudResource>: ObservableObject {
+    @Published var items: [T] = []
+    @Published var loaded: Bool = false
+
+    func reload(customApiBaseUrl: String, token: String) {
+        loaded = false
+        items.removeAll()
+
+        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
+                                            resourceSuffix: T.endpoint,
+                                            timeout: AppSettings.shared.timeoutSeconds,
+                                            token: token)
+        else { return }
+
+        startDataTask(request: request) { data in
+            let decoded: [T] = decodeResourceList(from: data)
+            DispatchQueue.main.async {
+                self.items = decoded
+                self.loaded = true
+            }
+        }
+    }
 }

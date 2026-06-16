@@ -62,11 +62,14 @@ func startDataTask(request: URLRequest, onData: @escaping (Data) -> Void) {
 
 /// Decodes a Hetzner list response (`{ "<container>": [...], "meta": {...} }`) into typed resources.
 ///
-/// A single `JSONSerialization` pass splits out the container array so each element's exact raw
-/// bytes can be retained (pretty-printed) for the "Show JSON" feature; the typed fields are then
-/// decoded per element with `JSONDecoder`. Elements that fail to decode are skipped and logged
-/// rather than discarding the whole list.
-func decodeResourceList<T: HCloudResource>(from data: Data, container: String, resType: String) -> [T] {
+/// The container key and type tag are read from the element type's static metadata. A single
+/// `JSONSerialization` pass splits out the container array so each element's exact raw bytes can be
+/// retained (pretty-printed) for the "Show JSON" feature; the typed fields are then decoded per
+/// element with `JSONDecoder`. Elements that fail to decode are skipped and logged rather than
+/// discarding the whole list.
+func decodeResourceList<T: HCloudResource>(from data: Data) -> [T] {
+    let container = T.endpoint
+
     guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
         logJson.error("Error creating dictionary from json data")
         return []
@@ -88,7 +91,7 @@ func decodeResourceList<T: HCloudResource>(from data: Data, container: String, r
 
         do {
             var resource = try decoder.decode(T.self, from: itemData)
-            resource.resType = resType
+            resource.resType = T.resourceType
             resource.jsonData = itemData
             resources.append(resource)
         } catch {

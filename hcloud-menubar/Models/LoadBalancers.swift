@@ -1,6 +1,9 @@
 import Foundation
 
 struct LoadBalancer: HCloudResource {
+    static let endpoint = "load_balancers"
+    static let resourceType = "load_balancer"
+
     var id: Int?
     var name: String?
     var created: String?
@@ -24,26 +27,4 @@ struct LoadBalancer: HCloudResource {
     }
 }
 
-class LoadBalancers: ObservableObject {
-    @Published var items: [LoadBalancer] = []
-    @Published var loaded: Bool = false
-
-    func reload(customApiBaseUrl: String, token: String) {
-        loaded = false
-        items.removeAll()
-
-        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                            resourceSuffix: "load_balancers",
-                                            timeout: AppSettings.shared.timeoutSeconds,
-                                            token: token)
-        else { return }
-
-        startDataTask(request: request) { data in
-            let decoded: [LoadBalancer] = decodeResourceList(from: data, container: "load_balancers", resType: "load_balancer")
-            DispatchQueue.main.async {
-                self.items = decoded
-                self.loaded = true
-            }
-        }
-    }
-}
+typealias LoadBalancers = ResourceList<LoadBalancer>

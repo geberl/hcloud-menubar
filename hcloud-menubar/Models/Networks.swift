@@ -1,6 +1,9 @@
 import Foundation
 
 struct Network: HCloudResource {
+    static let endpoint = "networks"
+    static let resourceType = "network"
+
     var id: Int?
     var name: String?
     var created: String?
@@ -14,26 +17,4 @@ struct Network: HCloudResource {
     }
 }
 
-class Networks: ObservableObject {
-    @Published var items: [Network] = []
-    @Published var loaded: Bool = false
-
-    func reload(customApiBaseUrl: String, token: String) {
-        loaded = false
-        items.removeAll()
-
-        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                            resourceSuffix: "networks",
-                                            timeout: AppSettings.shared.timeoutSeconds,
-                                            token: token)
-        else { return }
-
-        startDataTask(request: request) { data in
-            let decoded: [Network] = decodeResourceList(from: data, container: "networks", resType: "network")
-            DispatchQueue.main.async {
-                self.items = decoded
-                self.loaded = true
-            }
-        }
-    }
-}
+typealias Networks = ResourceList<Network>

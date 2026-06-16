@@ -1,6 +1,9 @@
 import Foundation
 
 struct PrimaryIP: HCloudResource {
+    static let endpoint = "primary_ips"
+    static let resourceType = "primary_ip"
+
     var id: Int?
     var name: String?
     var created: String?
@@ -15,26 +18,4 @@ struct PrimaryIP: HCloudResource {
     }
 }
 
-class PrimaryIPs: ObservableObject {
-    @Published var items: [PrimaryIP] = []
-    @Published var loaded: Bool = false
-
-    func reload(customApiBaseUrl: String, token: String) {
-        loaded = false
-        items.removeAll()
-
-        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                            resourceSuffix: "primary_ips",
-                                            timeout: AppSettings.shared.timeoutSeconds,
-                                            token: token)
-        else { return }
-
-        startDataTask(request: request) { data in
-            let decoded: [PrimaryIP] = decodeResourceList(from: data, container: "primary_ips", resType: "primary_ip")
-            DispatchQueue.main.async {
-                self.items = decoded
-                self.loaded = true
-            }
-        }
-    }
-}
+typealias PrimaryIPs = ResourceList<PrimaryIP>

@@ -1,6 +1,9 @@
 import Foundation
 
 struct FloatingIP: HCloudResource {
+    static let endpoint = "floating_ips"
+    static let resourceType = "floating_ip"
+
     var id: Int?
     var name: String?
     var created: String?
@@ -15,26 +18,4 @@ struct FloatingIP: HCloudResource {
     }
 }
 
-class FloatingIPs: ObservableObject {
-    @Published var items: [FloatingIP] = []
-    @Published var loaded: Bool = false
-
-    func reload(customApiBaseUrl: String, token: String) {
-        loaded = false
-        items.removeAll()
-
-        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                            resourceSuffix: "floating_ips",
-                                            timeout: AppSettings.shared.timeoutSeconds,
-                                            token: token)
-        else { return }
-
-        startDataTask(request: request) { data in
-            let decoded: [FloatingIP] = decodeResourceList(from: data, container: "floating_ips", resType: "floating_ip")
-            DispatchQueue.main.async {
-                self.items = decoded
-                self.loaded = true
-            }
-        }
-    }
-}
+typealias FloatingIPs = ResourceList<FloatingIP>

@@ -1,6 +1,9 @@
 import Foundation
 
 struct Volume: HCloudResource {
+    static let endpoint = "volumes"
+    static let resourceType = "volume"
+
     var id: Int?
     var name: String?
     var created: String?
@@ -14,26 +17,4 @@ struct Volume: HCloudResource {
     }
 }
 
-class Volumes: ObservableObject {
-    @Published var items: [Volume] = []
-    @Published var loaded: Bool = false
-
-    func reload(customApiBaseUrl: String, token: String) {
-        loaded = false
-        items.removeAll()
-
-        guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
-                                            resourceSuffix: "volumes",
-                                            timeout: AppSettings.shared.timeoutSeconds,
-                                            token: token)
-        else { return }
-
-        startDataTask(request: request) { data in
-            let decoded: [Volume] = decodeResourceList(from: data, container: "volumes", resType: "volume")
-            DispatchQueue.main.async {
-                self.items = decoded
-                self.loaded = true
-            }
-        }
-    }
-}
+typealias Volumes = ResourceList<Volume>
