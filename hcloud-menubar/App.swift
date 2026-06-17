@@ -2,10 +2,12 @@ import os.log
 import SwiftData
 import SwiftUI
 
-let logGeneral = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "general")
-let logApi = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "api")
-let logJson = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "json")
-let logUi = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ui")
+private let logSubsystem = Bundle.main.bundleIdentifier ?? "se.eberl.hcloud-menubar"
+
+let logGeneral = Logger(subsystem: logSubsystem, category: "general")
+let logApi = Logger(subsystem: logSubsystem, category: "api")
+let logJson = Logger(subsystem: logSubsystem, category: "json")
+let logUi = Logger(subsystem: logSubsystem, category: "ui")
 
 @main
 struct hcloudMenubarApp: App {
