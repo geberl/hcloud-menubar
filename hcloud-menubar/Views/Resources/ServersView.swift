@@ -99,13 +99,18 @@ struct ServerMenuItem: View {
     }
 
     func startSSHSession(server: Server) {
+        guard let user = server.sshUser(), let host = server.sshHost() else {
+            logUi.error("Server startSSHSession: Refusing to launch, SSH user or host failed validation")
+            return
+        }
+        let port = server.sshPort()
         let appTerminal = AppSettings.shared.appTerminal
 
         if TerminalValuesOpenCommand.values.contains(appTerminal) {
-            let command = "ssh \(server.sshUser())@\(server.sshHost()) -p \(server.sshPort())"
+            let command = "ssh \(user)@\(host) -p \(port)"
             startSshViaCommand(bundleIdentifier: appTerminal, command: command)
         } else {
-            let sshConnectionString = "ssh://\(server.sshUser())@\(server.sshHost()):\(server.sshPort())"
+            let sshConnectionString = "ssh://\(user)@\(host):\(port)"
             if let safeSshUrl = URL(string: sshConnectionString) {
                 logUi.info("Server startSSHSession: Attempting to open '\(safeSshUrl)' with '\(appTerminal)'")
                 openUrlInApp(url: safeSshUrl, app: appTerminal)
