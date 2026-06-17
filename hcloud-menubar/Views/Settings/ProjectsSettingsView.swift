@@ -27,12 +27,16 @@ struct ProjectsSettingsView: View {
                             .frame(width: 55, height: 18)
                     }
                     .buttonStyle(.bordered)
+                    .help("Add project")
+                    .accessibilityLabel("Add project")
                     Button(action: { showingDeleteConfirmation = true }) {
                         Image(systemName: "minus")
                             .frame(width: 55, height: 18)
                     }
                     .buttonStyle(.bordered)
                     .disabled(selectedProject == nil)
+                    .help("Delete selected project")
+                    .accessibilityLabel("Delete selected project")
                 }
                 .padding()
             }

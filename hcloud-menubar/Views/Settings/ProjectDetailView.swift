@@ -131,6 +131,7 @@ struct ProjectDetailView: View {
                     HStack {
                         Image(systemName: testIconName)
                             .foregroundStyle(testIconColor)
+                            .accessibilityHidden(true)
                         Text(testMessage)
                             .font(.caption)
                     }
