@@ -76,7 +76,11 @@ struct ProjectsSettingsView: View {
         )
         modelContext.insert(newProject)
 
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            logGeneral.error("Failed to save new project: \(error)")
+        }
 
         // Select the newly created project
         selectedProject = newProject
@@ -86,7 +90,11 @@ struct ProjectsSettingsView: View {
         guard let selectedProject else { return }
         modelContext.delete(selectedProject)
 
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            logGeneral.error("Failed to delete project: \(error)")
+        }
 
         // Clear selection after deletion
         self.selectedProject = nil
