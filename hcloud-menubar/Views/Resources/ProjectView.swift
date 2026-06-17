@@ -8,6 +8,7 @@ struct ProjectView: View {
     @StateObject var primaryIPs = PrimaryIPs()
     @StateObject var floatingIPs = FloatingIPs()
     @StateObject var networks = Networks()
+    @StateObject var firewalls = Firewalls()
 
     var body: some View {
         Menu {
@@ -17,6 +18,7 @@ struct ProjectView: View {
             PrimaryIPsView(project: project).environmentObject(primaryIPs)
             FloatingIPsView(project: project).environmentObject(floatingIPs)
             NetworksView(project: project).environmentObject(networks)
+            FirewallsView(project: project).environmentObject(firewalls)
 
             Divider()
             Button("Copy ID", action: { copyToClipboard(content: String(project.projectId)) })
@@ -42,7 +44,8 @@ struct ProjectView: View {
     /// once at least one has loaded successfully, `nil` while everything is still idle/loading.
     private var loadsWorking: Bool? {
         let states = [servers.loadState, volumes.loadState, loadBalancers.loadState,
-                      primaryIPs.loadState, floatingIPs.loadState, networks.loadState]
+                      primaryIPs.loadState, floatingIPs.loadState, networks.loadState,
+                      firewalls.loadState]
 
         if states.contains(where: { if case .failed = $0 { true } else { false } }) {
             return false
@@ -81,6 +84,7 @@ struct ProjectView: View {
         primaryIPs.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
         floatingIPs.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
         networks.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
+        firewalls.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
     }
 
     func openProject() {
