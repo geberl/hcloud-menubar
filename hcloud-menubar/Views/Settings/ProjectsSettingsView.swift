@@ -92,6 +92,7 @@ struct ProjectsSettingsView: View {
 
     private func deleteSelectedProject() {
         guard let selectedProject else { return }
+        KeychainTokenStore.delete(for: selectedProject.id)
         modelContext.delete(selectedProject)
 
         do {
