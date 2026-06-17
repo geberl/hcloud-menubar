@@ -9,6 +9,7 @@ struct ProjectView: View {
     @StateObject var floatingIPs = FloatingIPs()
     @StateObject var networks = Networks()
     @StateObject var firewalls = Firewalls()
+    @StateObject var zones = Zones()
 
     var body: some View {
         Menu {
@@ -17,8 +18,9 @@ struct ProjectView: View {
             LoadBalancersView(project: project).environmentObject(loadBalancers)
             PrimaryIPsView(project: project).environmentObject(primaryIPs)
             FloatingIPsView(project: project).environmentObject(floatingIPs)
-            NetworksView(project: project).environmentObject(networks)
             FirewallsView(project: project).environmentObject(firewalls)
+            NetworksView(project: project).environmentObject(networks)
+            ZonesView(project: project).environmentObject(zones)
 
             Divider()
             Button("Copy ID", action: { copyToClipboard(content: String(project.projectId)) })
@@ -45,7 +47,7 @@ struct ProjectView: View {
     private var loadsWorking: Bool? {
         let states = [servers.loadState, volumes.loadState, loadBalancers.loadState,
                       primaryIPs.loadState, floatingIPs.loadState, networks.loadState,
-                      firewalls.loadState]
+                      firewalls.loadState, zones.loadState]
 
         if states.contains(where: { if case .failed = $0 { true } else { false } }) {
             return false
@@ -83,8 +85,9 @@ struct ProjectView: View {
         loadBalancers.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
         primaryIPs.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
         floatingIPs.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
-        networks.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
         firewalls.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
+        networks.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
+        zones.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
     }
 
     func openProject() {

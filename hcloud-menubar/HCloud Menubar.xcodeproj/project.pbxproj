@@ -19,8 +19,6 @@
 		A4464928289E97BD00B74593 /* PrimaryIPsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4464927289E97BD00B74593 /* PrimaryIPsView.swift */; };
 		A447B11028A0F2880095F433 /* NetworksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A447B10F28A0F2880095F433 /* NetworksView.swift */; };
 		A447B11228A0F43F0095F433 /* Networks.swift in Sources */ = {isa = PBXBuildFile; fileRef = A447B11128A0F43F0095F433 /* Networks.swift */; };
-		A4F19EA0000000000000F002 /* Firewalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F001 /* Firewalls.swift */; };
-		A4F19EA0000000000000F004 /* FirewallsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F003 /* FirewallsView.swift */; };
 		A472076A2F3521EA00759FED /* DebugSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47207692F3521D300759FED /* DebugSettingsView.swift */; };
 		A473016B2896D1A7009047E8 /* DefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A473016A2896D1A7009047E8 /* DefaultKeys.swift */; };
 		A473016D2896D223009047E8 /* Servers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A473016C2896D223009047E8 /* Servers.swift */; };
@@ -36,6 +34,10 @@
 		A4EB238C2882E6B000F89FD8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A4EB238B2882E6B000F89FD8 /* Assets.xcassets */; };
 		A4EB23902882E6B000F89FD8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A4EB238F2882E6B000F89FD8 /* Preview Assets.xcassets */; };
 		A4EB23992882E83700F89FD8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EB23982882E82A00F89FD8 /* SettingsView.swift */; };
+		A4F19EA0000000000000F002 /* Firewalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F001 /* Firewalls.swift */; };
+		A4F19EA0000000000000F004 /* FirewallsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F003 /* FirewallsView.swift */; };
+		A4F19EA0000000000000F012 /* Zones.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F011 /* Zones.swift */; };
+		A4F19EA0000000000000F014 /* ZonesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F013 /* ZonesView.swift */; };
 		A4FFE1CC2F34ACC00019C3E9 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFE1CB2F34ACB70019C3E9 /* GeneralSettingsView.swift */; };
 		A4FFE1CE2F34ACD80019C3E9 /* ProjectsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFE1CD2F34ACCE0019C3E9 /* ProjectsSettingsView.swift */; };
 		A4FFE1D02F34ACE80019C3E9 /* ProjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFE1CF2F34ACE00019C3E9 /* ProjectDetailView.swift */; };
@@ -57,8 +59,6 @@
 		A4464927289E97BD00B74593 /* PrimaryIPsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryIPsView.swift; sourceTree = "<group>"; };
 		A447B10F28A0F2880095F433 /* NetworksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworksView.swift; sourceTree = "<group>"; };
 		A447B11128A0F43F0095F433 /* Networks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networks.swift; sourceTree = "<group>"; };
-		A4F19EA0000000000000F001 /* Firewalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firewalls.swift; sourceTree = "<group>"; };
-		A4F19EA0000000000000F003 /* FirewallsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallsView.swift; sourceTree = "<group>"; };
 		A47207692F3521D300759FED /* DebugSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsView.swift; sourceTree = "<group>"; };
 		A473016A2896D1A7009047E8 /* DefaultKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultKeys.swift; sourceTree = "<group>"; };
 		A473016C2896D223009047E8 /* Servers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Servers.swift; sourceTree = "<group>"; };
@@ -77,6 +77,10 @@
 		A4EB238D2882E6B000F89FD8 /* HCloud-Menubar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "HCloud-Menubar.entitlements"; sourceTree = "<group>"; };
 		A4EB238F2882E6B000F89FD8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A4EB23982882E82A00F89FD8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A4F19EA0000000000000F001 /* Firewalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firewalls.swift; sourceTree = "<group>"; };
+		A4F19EA0000000000000F003 /* FirewallsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallsView.swift; sourceTree = "<group>"; };
+		A4F19EA0000000000000F011 /* Zones.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zones.swift; sourceTree = "<group>"; };
+		A4F19EA0000000000000F013 /* ZonesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZonesView.swift; sourceTree = "<group>"; };
 		A4FFE1CB2F34ACB70019C3E9 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		A4FFE1CD2F34ACCE0019C3E9 /* ProjectsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectsSettingsView.swift; sourceTree = "<group>"; };
 		A4FFE1CF2F34ACE00019C3E9 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectDetailView.swift; sourceTree = "<group>"; };
@@ -108,6 +112,7 @@
 				A41654A3289E8FBE00B8F9FF /* FloatingIPs.swift */,
 				A447B11128A0F43F0095F433 /* Networks.swift */,
 				A4F19EA0000000000000F001 /* Firewalls.swift */,
+				A4F19EA0000000000000F011 /* Zones.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -123,6 +128,7 @@
 				A41654A1289E8DE200B8F9FF /* FloatingIPsView.swift */,
 				A447B10F28A0F2880095F433 /* NetworksView.swift */,
 				A4F19EA0000000000000F003 /* FirewallsView.swift */,
+				A4F19EA0000000000000F013 /* ZonesView.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -289,6 +295,8 @@
 				A447B11228A0F43F0095F433 /* Networks.swift in Sources */,
 				A4F19EA0000000000000F002 /* Firewalls.swift in Sources */,
 				A4F19EA0000000000000F004 /* FirewallsView.swift in Sources */,
+				A4F19EA0000000000000F012 /* Zones.swift in Sources */,
+				A4F19EA0000000000000F014 /* ZonesView.swift in Sources */,
 				A4FFE1D22F34ACF50019C3E9 /* LabelsSettingsView.swift in Sources */,
 				A40CA75F289CDEEB00344A4E /* WebLinks.swift in Sources */,
 				A4EB23992882E83700F89FD8 /* SettingsView.swift in Sources */,
