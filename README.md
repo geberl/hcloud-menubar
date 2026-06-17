@@ -89,7 +89,7 @@ You can keep sandboxing enabled if you only use:
 
 ## Attributions
 
-ChatGPT, Claude and Gemini were used as research tools during development, similar to how one would use a search engine. Some generated code was copy-pasted, but all of it was manually reviewed. No autonomous agents were let loose on this repo (yet).
+ChatGPT, Claude and Gemini were used as research tools during development, similar to how one would use a search engine. Claude Code helps interactively. All generated code was manually reviewed.
 
 The "H" in the logo is inspired by Hetzner's official branding. All related trademarks and rights belong to Hetzner.
 
