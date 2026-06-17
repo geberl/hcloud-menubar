@@ -63,7 +63,7 @@ struct GeneralSettingsView: View {
             // Reload after tab switch, to not hang on old state when settings reset was triggered
             launchAtLogin = SMAppService.mainApp.status == .enabled
         }
-        .frame(width: 480)
+        .frame(width: SettingsGeneralWidth)
         .frame(height: 400)
     }
 

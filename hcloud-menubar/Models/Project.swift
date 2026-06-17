@@ -53,7 +53,7 @@ extension Project {
             projectId: 123_456,
             name: "Hetzner Demo Project",
             token: "preview_token",
-            permissions: 0,
+            permissions: PermissionReadOnly,
             refreshOnStartup: true,
             customApiBaseUrl: "https://api.hetzner.cloud/v1",
             customHetznerConsoleBaseUrl: "https://console.hetzner.cloud"

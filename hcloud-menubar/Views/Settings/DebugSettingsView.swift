@@ -78,7 +78,7 @@ struct DebugSettingsView: View {
                 Text("This will reset all settings to defaults and remove all projects and API tokens. This action cannot be undone.")
             }
         }
-        .frame(width: 450)
+        .frame(width: SettingsDebugWidth)
         .frame(height: 380)
     }
 

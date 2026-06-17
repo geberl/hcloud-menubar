@@ -24,7 +24,7 @@ struct SettingsView: View {
                     Label("About", systemImage: "info.circle")
                 }
         }
-        .frame(width: 625)
+        .frame(width: SettingsWindowWidth)
     }
 }
 

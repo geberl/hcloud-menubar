@@ -9,10 +9,25 @@ let AppSettingsTimeout: String = "timeoutSeconds"
 
 // MARK: - Token Configuration
 
+let PermissionReadOnly: Int = 0
+let PermissionReadWrite: Int = 1
+
 let PermissionsValues: [Int: String] = [
-    0: "Read-Only",
-    1: "Read-Write",
+    PermissionReadOnly: "Read-Only",
+    PermissionReadWrite: "Read-Write",
 ]
+
+// MARK: - Settings Window Dimensions
+
+/// Width of the settings window. The TabView and the full-width Projects tab share it.
+let SettingsWindowWidth: CGFloat = 625
+let SettingsProjectsHeight: CGFloat = 535
+let SettingsProjectsSidebarWidth: CGFloat = 200
+let SettingsProjectDetailWidth: CGFloat = 425
+let SettingsGeneralWidth: CGFloat = 480
+let SettingsLabelsWidth: CGFloat = 450
+let SettingsDebugWidth: CGFloat = 450
+let SettingsAboutWidth: CGFloat = 450
 
 // MARK: - Label Configuration
 

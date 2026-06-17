@@ -110,7 +110,7 @@ struct AboutSettingsView: View {
                 }
                 .padding(8)
             }
-            .frame(maxWidth: 450)
+            .frame(maxWidth: SettingsAboutWidth)
 
             Spacer()
 

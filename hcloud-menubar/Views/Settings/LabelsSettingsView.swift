@@ -60,7 +60,7 @@ struct LabelsSettingsView: View {
             }
         }
         .padding()
-        .frame(width: 450)
+        .frame(width: SettingsLabelsWidth)
         .frame(height: 530)
     }
 }

@@ -36,7 +36,7 @@ struct ProjectsSettingsView: View {
                 }
                 .padding()
             }
-            .frame(width: 200)
+            .frame(width: SettingsProjectsSidebarWidth)
 
             Divider()
 
@@ -50,7 +50,7 @@ struct ProjectsSettingsView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .frame(width: 625, height: 535)
+        .frame(width: SettingsWindowWidth, height: SettingsProjectsHeight)
         .confirmationDialog(
             "Are you sure you want to delete the Project \"\(selectedProject?.name ?? "")\"?",
             isPresented: $showingDeleteConfirmation,
@@ -69,7 +69,7 @@ struct ProjectsSettingsView: View {
             projectId: 0,
             name: "New Project",
             token: "",
-            permissions: 0,
+            permissions: PermissionReadOnly,
             refreshOnStartup: false,
             customApiBaseUrl: DefaultApiBaseUrl,
             customHetznerConsoleBaseUrl: DefaultHetznerConsoleBaseUrl

@@ -164,7 +164,7 @@ struct ProjectDetailView: View {
             testResult = nil
         }
         .padding()
-        .frame(width: 425)
+        .frame(width: SettingsProjectDetailWidth)
     }
 }
 
