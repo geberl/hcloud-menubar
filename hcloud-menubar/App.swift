@@ -25,6 +25,7 @@ struct hcloudMenubarApp: App {
         Settings {
             SettingsView()
                 .modelContainer(container)
+                .environment(AppSettings.shared)
         }
 
         MenuBarExtra {

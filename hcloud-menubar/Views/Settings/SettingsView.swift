@@ -1,15 +1,12 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var appSettings = AppSettings.shared
-
     var body: some View {
         TabView {
             GeneralSettingsView()
                 .tabItem {
                     Label("General", systemImage: "gearshape")
                 }
-                .environment(appSettings)
             ProjectsSettingsView()
                 .tabItem {
                     Label("Projects", systemImage: "key")
@@ -34,5 +31,6 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+            .environment(AppSettings.shared)
     }
 }
