@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct LoadBalancersView: View {
@@ -53,6 +54,7 @@ struct LoadBalancersView: View {
 struct LoadBalancerMenuItem: View {
     var project: Project
     var loadBalancer: LoadBalancer
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         if !loadBalancer.hidden() {
@@ -71,6 +73,9 @@ struct LoadBalancerMenuItem: View {
                 }
                 Divider()
                 Button("Show JSON", action: { openJsonInEditor(resource: loadBalancer) })
+                if loadBalancer.id != nil {
+                    Button("Show Metrics", action: { showMetrics() })
+                }
                 Divider()
                 Button("View Load Balancer", action: { openLoadBalancer(loadBalancerId: loadBalancer.id) })
             } label: {
@@ -90,6 +95,20 @@ struct LoadBalancerMenuItem: View {
         } else {
             "Unknown"
         }
+    }
+
+    /// Open the metrics window for this Load Balancer. The app is a menu-bar accessory
+    /// (`LSUIElement`), so it must be activated explicitly for the new window to come to the front.
+    func showMetrics() {
+        guard let safeID = loadBalancer.id else { return }
+
+        let target = LoadBalancerMetricsTarget(projectUUID: project.id,
+                                               customApiBaseUrl: project.customApiBaseUrl,
+                                               loadBalancerId: safeID,
+                                               name: loadBalancer.name ?? "Load Balancer",
+                                               created: loadBalancer.created)
+        openWindow(id: "lb-metrics", value: target)
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     func openLoadBalancer(loadBalancerId: Int?) {

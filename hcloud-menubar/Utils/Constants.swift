@@ -66,6 +66,26 @@ let EditorValues: [String: String] = [
     "Nova": "com.panic.Nova",
 ]
 
+// MARK: - Load Balancer Metrics Window
+
+/// Default size of the per–Load Balancer metrics window.
+let LoadBalancerMetricsWindowWidth: CGFloat = 720
+let LoadBalancerMetricsWindowHeight: CGFloat = 680
+/// Height of a single metric chart; three stack vertically in the window.
+let MetricChartHeight: CGFloat = 150
+
+/// Metric series the window plots, matching the `type` values of the Load Balancer metrics endpoint.
+let MetricTypeRequestsPerSecond: String = "requests_per_second"
+let MetricTypeOpenConnections: String = "open_connections"
+let MetricTypeConnectionsPerSecond: String = "connections_per_second"
+
+/// All series requested (in one call) and displayed, top to bottom.
+let MetricTypesDisplayed: [String] = [
+    MetricTypeRequestsPerSecond,
+    MetricTypeOpenConnections,
+    MetricTypeConnectionsPerSecond,
+]
+
 // MARK: - API Configuration
 
 let DefaultApiBaseUrl: String = "https://api.hetzner.cloud/v1"

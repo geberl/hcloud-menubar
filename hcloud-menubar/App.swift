@@ -47,5 +47,14 @@ struct hcloudMenubarApp: App {
             }
         }
         .menuBarExtraStyle(.menu)
+
+        // Per–Load Balancer metrics window. `WindowGroup(for:)` reuses the window for an identical
+        // target, so re-opening the same Load Balancer focuses its window instead of duplicating it.
+        WindowGroup(id: "lb-metrics", for: LoadBalancerMetricsTarget.self) { $target in
+            if let target {
+                LoadBalancerMetricsView(target: target)
+            }
+        }
+        .windowResizability(.contentSize)
     }
 }

@@ -131,6 +131,58 @@ func loadResources<T: HCloudResource>(customApiBaseUrl: String,
     return .success(items)
 }
 
+/// RFC3339 formatter for the metrics `start`/`end` query parameters.
+private let metricsDateFormatter = ISO8601DateFormatter()
+
+/// Fetches the displayed metrics (`MetricTypesDisplayed`) for a single Load Balancer over the
+/// trailing `rangeSeconds` window in one call, reusing the shared request/fetch path. Non-isolated
+/// `async`, so the network wait and JSON decode stay off the main actor.
+///
+/// `GET /load_balancers/{id}/metrics?type=…&type=…&start=…&end=…&step=…`. Returns a dictionary
+/// keyed by metric type, each value sorted by time. A decodable body that isn't the expected shape
+/// maps to `.decoding`.
+func loadLoadBalancerMetrics(customApiBaseUrl: String,
+                             loadBalancerId: Int,
+                             rangeSeconds: Int,
+                             step: Int,
+                             timeout: Double,
+                             token: String) async -> Result<[String: [MetricSample]], HCloudError>
+{
+    let end = Date()
+    let start = end.addingTimeInterval(-Double(rangeSeconds))
+
+    var queryItems = [
+        URLQueryItem(name: "start", value: metricsDateFormatter.string(from: start)),
+        URLQueryItem(name: "end", value: metricsDateFormatter.string(from: end)),
+        URLQueryItem(name: "step", value: String(step)),
+    ]
+    queryItems.append(contentsOf: MetricTypesDisplayed.map { URLQueryItem(name: "type", value: $0) })
+
+    guard let request = buildURLRequest(customApiBaseUrl: customApiBaseUrl,
+                                        resourceSuffix: "load_balancers/\(loadBalancerId)/metrics",
+                                        timeout: timeout,
+                                        token: token,
+                                        queryItems: queryItems)
+    else { return .failure(.network) }
+
+    switch await fetchData(request: request) {
+    case let .success(data):
+        guard let response = try? JSONDecoder().decode(LBMetricsResponse.self, from: data) else {
+            logJson.error("loadLoadBalancerMetrics failed to decode metrics response")
+            return .failure(.decoding)
+        }
+
+        let series = response.metrics.timeSeries.mapValues { series in
+            series.values
+                .map { MetricSample(date: $0.date, value: $0.value) }
+                .sorted { $0.date < $1.date }
+        }
+        return .success(series)
+    case let .failure(error):
+        return .failure(error)
+    }
+}
+
 /// Decodes a Hetzner list response (`{ "<container>": [...], "meta": {...} }`) into typed resources.
 ///
 /// The container key and type tag are read from the element type's static metadata. A single

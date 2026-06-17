@@ -26,7 +26,6 @@
 		A47301742896E51C009047E8 /* LoadBalancers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47301732896E51C009047E8 /* LoadBalancers.swift */; };
 		A47F52B32F34F3CF00CD956D /* AboutSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47F52B22F34F3C500CD956D /* AboutSettingsView.swift */; };
 		A48CBADB2F37577800C06DB4 /* Clipboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48CBADA2F37577400C06DB4 /* Clipboard.swift */; };
-		A4F0000100000000000000FF /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0000200000000000000FF /* Keychain.swift */; };
 		A4A2C788289A4EF00093355C /* ProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A2C787289A4EF00093355C /* ProjectView.swift */; };
 		A4DA17AD28CA4E1B00CFD23A /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DA17AC28CA4E1B00CFD23A /* Api.swift */; };
 		A4E6A05928CA40C1004A8EB7 /* ExternalApplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E6A05828CA40C1004A8EB7 /* ExternalApplications.swift */; };
@@ -35,10 +34,13 @@
 		A4EB238C2882E6B000F89FD8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A4EB238B2882E6B000F89FD8 /* Assets.xcassets */; };
 		A4EB23902882E6B000F89FD8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A4EB238F2882E6B000F89FD8 /* Preview Assets.xcassets */; };
 		A4EB23992882E83700F89FD8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EB23982882E82A00F89FD8 /* SettingsView.swift */; };
+		A4F0000100000000000000FF /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0000200000000000000FF /* Keychain.swift */; };
 		A4F19EA0000000000000F002 /* Firewalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F001 /* Firewalls.swift */; };
 		A4F19EA0000000000000F004 /* FirewallsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F003 /* FirewallsView.swift */; };
 		A4F19EA0000000000000F012 /* Zones.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F011 /* Zones.swift */; };
 		A4F19EA0000000000000F014 /* ZonesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F013 /* ZonesView.swift */; };
+		A4F19EA0000000000000F021 /* LoadBalancerMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F022 /* LoadBalancerMetrics.swift */; };
+		A4F19EA0000000000000F023 /* LoadBalancerMetricsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F024 /* LoadBalancerMetricsWindow.swift */; };
 		A4FFE1CC2F34ACC00019C3E9 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFE1CB2F34ACB70019C3E9 /* GeneralSettingsView.swift */; };
 		A4FFE1CE2F34ACD80019C3E9 /* ProjectsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFE1CD2F34ACCE0019C3E9 /* ProjectsSettingsView.swift */; };
 		A4FFE1D02F34ACE80019C3E9 /* ProjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFE1CF2F34ACE00019C3E9 /* ProjectDetailView.swift */; };
@@ -67,7 +69,6 @@
 		A47301732896E51C009047E8 /* LoadBalancers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadBalancers.swift; sourceTree = "<group>"; };
 		A47F52B22F34F3C500CD956D /* AboutSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSettingsView.swift; sourceTree = "<group>"; };
 		A48CBADA2F37577400C06DB4 /* Clipboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Clipboard.swift; sourceTree = "<group>"; };
-		A4F0000200000000000000FF /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		A4A2C787289A4EF00093355C /* ProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectView.swift; sourceTree = "<group>"; };
 		A4CFA53C2F34DC84006A9389 /* HCloud-Menubar-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HCloud-Menubar-Info.plist"; sourceTree = "<group>"; };
 		A4DA17AC28CA4E1B00CFD23A /* Api.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
@@ -79,10 +80,13 @@
 		A4EB238D2882E6B000F89FD8 /* HCloud-Menubar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "HCloud-Menubar.entitlements"; sourceTree = "<group>"; };
 		A4EB238F2882E6B000F89FD8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A4EB23982882E82A00F89FD8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A4F0000200000000000000FF /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F001 /* Firewalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firewalls.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F003 /* FirewallsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallsView.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F011 /* Zones.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zones.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F013 /* ZonesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZonesView.swift; sourceTree = "<group>"; };
+		A4F19EA0000000000000F022 /* LoadBalancerMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadBalancerMetrics.swift; sourceTree = "<group>"; };
+		A4F19EA0000000000000F024 /* LoadBalancerMetricsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadBalancerMetricsWindow.swift; sourceTree = "<group>"; };
 		A4FFE1CB2F34ACB70019C3E9 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		A4FFE1CD2F34ACCE0019C3E9 /* ProjectsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectsSettingsView.swift; sourceTree = "<group>"; };
 		A4FFE1CF2F34ACE00019C3E9 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectDetailView.swift; sourceTree = "<group>"; };
@@ -110,6 +114,7 @@
 				A473016C2896D223009047E8 /* Servers.swift */,
 				A473016F2896D423009047E8 /* Volumes.swift */,
 				A47301732896E51C009047E8 /* LoadBalancers.swift */,
+				A4F19EA0000000000000F022 /* LoadBalancerMetrics.swift */,
 				A4464925289E975D00B74593 /* PrimaryIPs.swift */,
 				A41654A3289E8FBE00B8F9FF /* FloatingIPs.swift */,
 				A447B11128A0F43F0095F433 /* Networks.swift */,
@@ -171,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				A4EB23892882E6AF00F89FD8 /* ContentView.swift */,
+				A4F19EA0000000000000F024 /* LoadBalancerMetricsWindow.swift */,
 				A4FFE1C82F34AC540019C3E9 /* Settings */,
 				A4A2C789289A4F180093355C /* Resources */,
 			);
@@ -313,6 +319,8 @@
 				A4EB238A2882E6AF00F89FD8 /* ContentView.swift in Sources */,
 				A48CBADB2F37577800C06DB4 /* Clipboard.swift in Sources */,
 				A4F0000100000000000000FF /* Keychain.swift in Sources */,
+				A4F19EA0000000000000F021 /* LoadBalancerMetrics.swift in Sources */,
+				A4F19EA0000000000000F023 /* LoadBalancerMetricsWindow.swift in Sources */,
 				A447B11028A0F2880095F433 /* NetworksView.swift in Sources */,
 				A4EB23882882E6AF00F89FD8 /* App.swift in Sources */,
 				A43341052897A2190001A1F9 /* LoadBalancersView.swift in Sources */,
