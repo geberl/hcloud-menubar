@@ -19,6 +19,8 @@ struct hcloudMenubarApp: App {
         } catch {
             fatalError("Failed to initialize ModelContainer: \(error)")
         }
+
+        sweepStaleSSHCommandFiles()
     }
 
     var body: some Scene {

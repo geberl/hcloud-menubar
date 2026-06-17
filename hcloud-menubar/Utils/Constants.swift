@@ -83,6 +83,11 @@ let ResourcesMaxPages: Int = 20
 let DefaultSSHUser: String = "root"
 let DefaultSSHPort: String = "22"
 
+/// How long the temporary `ssh-<UUID>.command` file is kept after launching the terminal before
+/// it is deleted. Long enough for the terminal to read and execute it, short enough that the
+/// files don't linger.
+let SshCommandFileLifetimeSeconds: Int = 10
+
 // MARK: Label Configuration
 
 let labelHide: String = "hcloud-menubar/hide"

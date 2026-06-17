@@ -87,8 +87,31 @@ func startSshViaCommand(bundleIdentifier: String, command: String) {
             } catch {
                 logUi.error("Failed to open command file: \(error.localizedDescription)")
             }
+
+            // The terminal only needs the file briefly to read and run it; remove it afterwards
+            // so these temp files don't accumulate over a long-running session.
+            try? await Task.sleep(for: .seconds(SshCommandFileLifetimeSeconds))
+            try? FileManager.default.removeItem(at: commandUrl)
         }
     } catch {
         logUi.error("Failed to create command file: \(error.localizedDescription)")
+    }
+}
+
+/// Remove leftover `ssh-*.command` files from the temp dir.
+///
+/// `startSshViaCommand` deletes its own file shortly after launch, but a crash or force-quit
+/// before that delay elapses can leave one behind. Sweeping on startup keeps these from piling
+/// up across runs.
+func sweepStaleSSHCommandFiles() {
+    let tempDir = FileManager.default.temporaryDirectory
+    guard let entries = try? FileManager.default.contentsOfDirectory(at: tempDir,
+                                                                     includingPropertiesForKeys: nil)
+    else {
+        return
+    }
+
+    for entry in entries where entry.lastPathComponent.hasPrefix("ssh-") && entry.pathExtension == "command" {
+        try? FileManager.default.removeItem(at: entry)
     }
 }
