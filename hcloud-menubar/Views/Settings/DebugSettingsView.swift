@@ -108,9 +108,6 @@ struct DebugSettingsView: View {
             print("Error: \(error.localizedDescription)")
         }
 
-        // Seed default projects
-        // ProjectSeeder.seedDefaultProjects(into: modelContext)
-
         logGeneral.info("All settings have been reset")
     }
 }

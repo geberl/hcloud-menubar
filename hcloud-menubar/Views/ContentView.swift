@@ -5,8 +5,15 @@ struct ContentView: View {
     @Query(sort: \Project.name, order: .forward) private var projects: [Project]
 
     var body: some View {
-        ForEach(projects) { project in
-            ProjectView(project: project)
+        if projects.isEmpty {
+            Text("No projects yet")
+            SettingsLink(label: {
+                Label("Add your first project…", systemImage: "plus")
+            })
+        } else {
+            ForEach(projects) { project in
+                ProjectView(project: project)
+            }
         }
         Divider()
         Button("View Projects", action: { openProjects() })

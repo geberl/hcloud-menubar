@@ -2,40 +2,6 @@ import Foundation
 import SwiftData
 import SwiftUI
 
-enum ProjectSeeder {
-    static func seedDefaultProjects(into context: ModelContext) {
-        let defaultProjects = [
-            Project(id: UUID(),
-                    projectId: 123,
-                    name: "Production",
-                    token: "foo",
-                    permissions: 0,
-                    refreshOnStartup: false,
-                    customApiBaseUrl: DefaultApiBaseUrl,
-                    customHetznerConsoleBaseUrl: DefaultHetznerConsoleBaseUrl),
-            Project(id: UUID(),
-                    projectId: 456,
-                    name: "Staging",
-                    token: "bar",
-                    permissions: 1,
-                    refreshOnStartup: false,
-                    customApiBaseUrl: "https://api.hetzner-staging.cloud/v1",
-                    customHetznerConsoleBaseUrl: "https://console.hetzner-staging.com/"),
-        ]
-
-        for project in defaultProjects {
-            context.insert(project)
-        }
-
-        do {
-            try context.save()
-            logGeneral.info("Seeded \(defaultProjects.count) default projects")
-        } catch {
-            logGeneral.error("Failed to seed default projects: \(error)")
-        }
-    }
-}
-
 @Observable
 final class AppSettings: @unchecked Sendable {
     // @Observable makes the class reference-mutable, which normally conflicts with Sendable
