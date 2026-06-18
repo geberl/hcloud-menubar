@@ -9,6 +9,7 @@ struct ProjectView: View {
     @StateObject var floatingIPs = FloatingIPs()
     @StateObject var networks = Networks()
     @StateObject var firewalls = Firewalls()
+    @StateObject var certificates = Certificates()
     @StateObject var zones = Zones()
 
     var body: some View {
@@ -19,6 +20,7 @@ struct ProjectView: View {
             PrimaryIPsView(project: project).environmentObject(primaryIPs)
             FloatingIPsView(project: project).environmentObject(floatingIPs)
             FirewallsView(project: project).environmentObject(firewalls)
+            CertificatesView(project: project).environmentObject(certificates)
             NetworksView(project: project).environmentObject(networks)
             ZonesView(project: project).environmentObject(zones)
 
@@ -47,7 +49,7 @@ struct ProjectView: View {
     private var loadsWorking: Bool? {
         let states = [servers.loadState, volumes.loadState, loadBalancers.loadState,
                       primaryIPs.loadState, floatingIPs.loadState, networks.loadState,
-                      firewalls.loadState, zones.loadState]
+                      firewalls.loadState, certificates.loadState, zones.loadState]
 
         if states.contains(where: { if case .failed = $0 { true } else { false } }) {
             return false
@@ -86,6 +88,7 @@ struct ProjectView: View {
         primaryIPs.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
         floatingIPs.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
         firewalls.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
+        certificates.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
         networks.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
         zones.reload(customApiBaseUrl: project.customApiBaseUrl, token: project.token)
     }
