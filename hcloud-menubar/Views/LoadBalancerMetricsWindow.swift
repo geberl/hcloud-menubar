@@ -82,19 +82,79 @@ struct LoadBalancerMetricsView: View {
 
     private var chartsSection: some View {
         VStack(alignment: .leading, spacing: 20) {
-            chartSection(title: "HTTP Requests Per Second",
-                         type: MetricTypeRequestsPerSecond,
-                         color: .accentColor,
-                         yLabel: "Requests/s")
             chartSection(title: "Open Connections",
                          type: MetricTypeOpenConnections,
-                         color: .green,
+                         color: Color(nsColor: .magenta),
                          yLabel: "Connections")
             chartSection(title: "Connections Per Second",
                          type: MetricTypeConnectionsPerSecond,
                          color: .orange,
                          yLabel: "Connections/s")
+            chartSection(title: "HTTP Requests Per Second",
+                         type: MetricTypeRequestsPerSecond,
+                         color: .red,
+                         yLabel: "Requests/s")
+            bandwidthSection
         }
+    }
+
+    // MARK: Bandwidth chart (two series in one chart)
+
+    private var bandwidthSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Bandwidth")
+                .font(.headline)
+            bandwidthBody
+                .frame(height: MetricChartHeight)
+        }
+    }
+
+    @ViewBuilder
+    private var bandwidthBody: some View {
+        let inSamples = model.series[MetricSeriesBandwidthIn] ?? []
+        let outSamples = model.series[MetricSeriesBandwidthOut] ?? []
+
+        if case let .failed(error) = model.loadState {
+            placeholder(Text(error.menuDescription).foregroundStyle(.secondary))
+        } else if !inSamples.isEmpty || !outSamples.isEmpty {
+            bandwidthChart(inSamples: inSamples, outSamples: outSamples)
+        } else if model.loadState == .loaded {
+            placeholder(Text("No data for this period").foregroundStyle(.secondary))
+        } else {
+            placeholder(ProgressView())
+        }
+    }
+
+    private func bandwidthChart(inSamples: [MetricSample], outSamples: [MetricSample]) -> some View {
+        Chart {
+            ForEach(inSamples) { sample in
+                AreaMark(x: .value("Time", sample.date), y: .value("Bytes/s", sample.value))
+                    .foregroundStyle(.linearGradient(colors: [.green.opacity(0.25), .green.opacity(0.02)],
+                                                     startPoint: .top, endPoint: .bottom))
+                    .interpolationMethod(.monotone)
+            }
+            ForEach(outSamples) { sample in
+                AreaMark(x: .value("Time", sample.date), y: .value("Bytes/s", sample.value))
+                    .foregroundStyle(.linearGradient(colors: [.blue.opacity(0.25), .blue.opacity(0.02)],
+                                                     startPoint: .top, endPoint: .bottom))
+                    .interpolationMethod(.monotone)
+            }
+            ForEach(inSamples) { sample in
+                LineMark(x: .value("Time", sample.date), y: .value("Bytes/s", sample.value),
+                         series: .value("Direction", "In"))
+                    .foregroundStyle(by: .value("Direction", "In"))
+                    .interpolationMethod(.monotone)
+            }
+            ForEach(outSamples) { sample in
+                LineMark(x: .value("Time", sample.date), y: .value("Bytes/s", sample.value),
+                         series: .value("Direction", "Out"))
+                    .foregroundStyle(by: .value("Direction", "Out"))
+                    .interpolationMethod(.monotone)
+            }
+        }
+        .chartForegroundStyleScale(["In": Color.green, "Out": Color.blue])
+        .chartYAxisLabel("Bytes/s")
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func chartSection(title: String, type: String, color: Color, yLabel: String) -> some View {

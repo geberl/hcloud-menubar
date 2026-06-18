@@ -70,20 +70,26 @@ let EditorValues: [String: String] = [
 
 /// Default size of the per–Load Balancer metrics window.
 let LoadBalancerMetricsWindowWidth: CGFloat = 720
-let LoadBalancerMetricsWindowHeight: CGFloat = 680
-/// Height of a single metric chart; three stack vertically in the window.
-let MetricChartHeight: CGFloat = 150
+let LoadBalancerMetricsWindowHeight: CGFloat = 820
+/// Height of a single metric chart; four stack vertically in the window.
+let MetricChartHeight: CGFloat = 130
 
 /// Metric series the window plots, matching the `type` values of the Load Balancer metrics endpoint.
 let MetricTypeRequestsPerSecond: String = "requests_per_second"
 let MetricTypeOpenConnections: String = "open_connections"
 let MetricTypeConnectionsPerSecond: String = "connections_per_second"
+let MetricTypeBandwidth: String = "bandwidth"
 
-/// All series requested (in one call) and displayed, top to bottom.
+/// `bandwidth` is returned as two separate series, one per direction.
+let MetricSeriesBandwidthIn: String = "bandwidth.in"
+let MetricSeriesBandwidthOut: String = "bandwidth.out"
+
+/// All metric types requested (in one call). Note `bandwidth` yields two series keys above.
 let MetricTypesDisplayed: [String] = [
     MetricTypeRequestsPerSecond,
     MetricTypeOpenConnections,
     MetricTypeConnectionsPerSecond,
+    MetricTypeBandwidth,
 ]
 
 // MARK: - API Configuration
