@@ -37,12 +37,12 @@
 		A4F0000100000000000000FF /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0000200000000000000FF /* Keychain.swift */; };
 		A4F19EA0000000000000F002 /* Firewalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F001 /* Firewalls.swift */; };
 		A4F19EA0000000000000F004 /* FirewallsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F003 /* FirewallsView.swift */; };
-		A4F19EA0000000000000F032 /* Certificates.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F031 /* Certificates.swift */; };
-		A4F19EA0000000000000F034 /* CertificatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F033 /* CertificatesView.swift */; };
 		A4F19EA0000000000000F012 /* Zones.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F011 /* Zones.swift */; };
 		A4F19EA0000000000000F014 /* ZonesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F013 /* ZonesView.swift */; };
 		A4F19EA0000000000000F021 /* LoadBalancerMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F022 /* LoadBalancerMetrics.swift */; };
 		A4F19EA0000000000000F023 /* LoadBalancerMetricsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F024 /* LoadBalancerMetricsWindow.swift */; };
+		A4F19EA0000000000000F032 /* Certificates.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F031 /* Certificates.swift */; };
+		A4F19EA0000000000000F034 /* CertificatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F19EA0000000000000F033 /* CertificatesView.swift */; };
 		A4FFE1CC2F34ACC00019C3E9 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFE1CB2F34ACB70019C3E9 /* GeneralSettingsView.swift */; };
 		A4FFE1CE2F34ACD80019C3E9 /* ProjectsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFE1CD2F34ACCE0019C3E9 /* ProjectsSettingsView.swift */; };
 		A4FFE1D02F34ACE80019C3E9 /* ProjectDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FFE1CF2F34ACE00019C3E9 /* ProjectDetailView.swift */; };
@@ -85,12 +85,12 @@
 		A4F0000200000000000000FF /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F001 /* Firewalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firewalls.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F003 /* FirewallsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirewallsView.swift; sourceTree = "<group>"; };
-		A4F19EA0000000000000F031 /* Certificates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Certificates.swift; sourceTree = "<group>"; };
-		A4F19EA0000000000000F033 /* CertificatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificatesView.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F011 /* Zones.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zones.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F013 /* ZonesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZonesView.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F022 /* LoadBalancerMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadBalancerMetrics.swift; sourceTree = "<group>"; };
 		A4F19EA0000000000000F024 /* LoadBalancerMetricsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadBalancerMetricsWindow.swift; sourceTree = "<group>"; };
+		A4F19EA0000000000000F031 /* Certificates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Certificates.swift; sourceTree = "<group>"; };
+		A4F19EA0000000000000F033 /* CertificatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificatesView.swift; sourceTree = "<group>"; };
 		A4FFE1CB2F34ACB70019C3E9 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		A4FFE1CD2F34ACCE0019C3E9 /* ProjectsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectsSettingsView.swift; sourceTree = "<group>"; };
 		A4FFE1CF2F34ACE00019C3E9 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectDetailView.swift; sourceTree = "<group>"; };
@@ -508,7 +508,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "se.eberl.hcloud-menubar";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -557,7 +557,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "se.eberl.hcloud-menubar";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
