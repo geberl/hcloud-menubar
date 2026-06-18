@@ -106,7 +106,8 @@ struct LoadBalancerMenuItem: View {
                                                customApiBaseUrl: project.customApiBaseUrl,
                                                loadBalancerId: safeID,
                                                name: loadBalancer.name ?? "Load Balancer",
-                                               created: loadBalancer.created)
+                                               ipv4: loadBalancer.ipv4,
+                                               ipv6: loadBalancer.ipv6)
         openWindow(id: "lb-metrics", value: target)
         NSApp.activate(ignoringOtherApps: true)
     }

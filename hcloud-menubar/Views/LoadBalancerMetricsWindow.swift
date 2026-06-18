@@ -10,7 +10,8 @@ struct LoadBalancerMetricsTarget: Codable, Hashable {
     let customApiBaseUrl: String
     let loadBalancerId: Int
     let name: String
-    let created: String?
+    let ipv4: String?
+    let ipv6: String?
 }
 
 struct LoadBalancerMetricsView: View {
@@ -33,7 +34,7 @@ struct LoadBalancerMetricsView: View {
         }
         .padding(20)
         .frame(minWidth: LoadBalancerMetricsWindowWidth, minHeight: LoadBalancerMetricsWindowHeight)
-        .navigationTitle("Load Balancer: \(target.name)")
+        .navigationTitle("Metrics")
         .toolbar { toolbarContent }
         .onAppear { model.refresh() }
         .onDisappear { model.stop() }
@@ -42,25 +43,39 @@ struct LoadBalancerMetricsView: View {
     // MARK: Title
 
     private var titleSection: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("Metrics")
-                .font(.title2)
-                .fontWeight(.bold)
-
-            HStack(spacing: 12) {
-                // `String(...)` avoids SwiftUI's locale grouping separators in the integer ID.
-                Text("ID \(String(target.loadBalancerId))")
-                Spacer()
-                Text("Last refreshed \(formattedLastRefreshed)")
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Load Balancer: \(target.name)")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
+                if let ipv4 = target.ipv4 {
+                    Text("IPv4 \(ipv4)")
+                }
+                if let ipv6 = target.ipv6 {
+                    Text("IPv6 \(ipv6)")
+                }
             }
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 2) {
+                Text("Last refresh \(formattedLastRefreshed)")
+                Text("Next refresh \(formattedNextRefresh)")
+            }
         }
+        .font(.subheadline)
+        .foregroundStyle(.secondary)
     }
 
     private var formattedLastRefreshed: String {
         guard let last = model.lastRefreshed else { return "—" }
         return last.formatted(date: .omitted, time: .standard)
+    }
+
+    private var formattedNextRefresh: String {
+        guard model.autoRefresh, let next = model.nextRefresh else { return "manual" }
+        return next.formatted(date: .omitted, time: .standard)
     }
 
     // MARK: Charts

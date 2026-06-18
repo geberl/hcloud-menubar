@@ -121,6 +121,8 @@ final class LoadBalancerMetricsModel: ObservableObject {
     @Published var series: [String: [MetricSample]] = [:]
     @Published var loadState: LoadState = .idle
     @Published var lastRefreshed: Date?
+    /// When the next auto-refresh is scheduled; `nil` when auto-refresh is off.
+    @Published var nextRefresh: Date?
 
     /// Whether a fetch is currently in flight, used to drive the toolbar spinner.
     var isRefreshing: Bool { loadState == .loading }
@@ -182,11 +184,15 @@ final class LoadBalancerMetricsModel: ObservableObject {
         autoRefreshTask?.cancel()
         autoRefreshTask = nil
 
-        guard autoRefresh else { return }
+        guard autoRefresh else {
+            nextRefresh = nil
+            return
+        }
 
         let interval = rate.rawValue
         autoRefreshTask = Task { [weak self] in
             while !Task.isCancelled {
+                self?.nextRefresh = Date().addingTimeInterval(Double(interval))
                 try? await Task.sleep(for: .seconds(interval))
                 if Task.isCancelled { break }
                 self?.refresh()
@@ -198,5 +204,6 @@ final class LoadBalancerMetricsModel: ObservableObject {
     func stop() {
         autoRefreshTask?.cancel()
         autoRefreshTask = nil
+        nextRefresh = nil
     }
 }
